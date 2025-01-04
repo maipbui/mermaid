@@ -1,36 +1,47 @@
 ```mermaid
 flowchart
     id_health(Start Health Check)
-    style id_health fill:#8AF
-    id_container(Check container Health Status via Docker inspect and logs)
-    style id_container fill:#AF9
-    id_checksum(Verify auditd rules checksum)
-    id_syntax(Verify auditd rules syntax)
-    id_logs(Verify auditd logs are sent to rsyslog)
-    id_conf(Verify auditd.conf is updated)
-    id_auditd_active(Verify auditd is active)
-    id_rules_active(Verify auditd rules are active)
-    id_cpuquota(Verify CPUQuota is enabled)
-    id_container_healthy(Container is healthy)
-    style id_container_healthy fill:#AF9
-    id_container_not_healthy(Container is not healthy)
-    style id_container_not_healthy fill:#F88
+    style id_health fill:#A9A9A9
+    id_container(Verify Container Settings)
+    style id_container fill:#8AF,stroke:#000
+    id_process(Verify auditd Status)
+    style id_process fill:#FFA500,stroke:#000
+    id_conf(Verify Config Files Integrity)
+    style id_conf fill:#FFA500,stroke:#000
+    id_syntax(Verify auditd Rules Syntax)
+    style id_syntax fill:#FFA500,stroke:#000
+    id_logs(Verify auditd Logs are Sent to rsyslog)
+    style id_logs fill:#8AF,stroke:#000
+    id_cpu(Check CPU Usage: auditd)
+    style id_cpu fill:#FFA500,stroke:#000
+    id_mem(Check Memory Usage: auditd)
+    style id_mem fill:#FFA500,stroke:#000
+    id_healthy(System is Healthy)
+    style id_healthy fill:#b9ff8a,stroke:#000
+    id_not_healthy(System is Unhealthy)
+    style id_not_healthy fill:#F88,stroke:#000
 
-    id_health -->|Start| id_container
-    id_container -->|Healthy| id_checksum
-    id_container -->|Unhealthy| id_container_not_healthy
-    id_checksum -->|Pass| id_syntax
-    id_checksum -->|Fail| id_container_not_healthy
+    id_health --> id_container
+    id_container -->|Pass| id_process
+    id_container -->|Fail| id_not_healthy
+    id_process -->|Pass| id_conf
+    id_process -->|Fail| id_not_healthy
+    id_conf -->|Pass| id_syntax
+    id_conf -->|Fail| id_not_healthy
     id_syntax -->|Pass| id_logs
-    id_syntax -->|Fail| id_container_not_healthy
-    id_logs -->|Pass| id_conf
-    id_logs -->|Fail| id_container_not_healthy
-    id_conf -->|Pass| id_auditd_active
-    id_conf -->|Fail| id_container_not_healthy
-    id_auditd_active -->|Pass| id_rules_active
-    id_auditd_active -->|Fail| id_container_not_healthy
-    id_rules_active -->|Pass| id_cpuquota
-    id_rules_active -->|Fail| id_container_not_healthy
-    id_cpuquota -->|Pass| id_container_healthy
-    id_cpuquota -->|Fail| id_container_not_healthy
+    id_syntax -->|Fail| id_not_healthy
+    id_logs -->|Pass| id_cpu
+    id_logs -->|Fail| id_not_healthy
+    id_cpu -->|Pass| id_mem
+    id_cpu -->|Fail| id_not_healthy
+    id_mem -->|Pass| id_healthy
+    id_mem -->|Fail| id_not_healthy
+
+    subgraph Legend
+        direction LR
+        A[Host]
+        style A fill:#8AF,stroke:#000
+        C[Container]
+        style C fill:#FFA500,stroke:#000
+    end
 ```

@@ -16,9 +16,9 @@ flowchart
     style id_cpu fill:#FFA500,stroke:#000
     id_mem(Check Memory Usage: auditd)
     style id_mem fill:#FFA500,stroke:#000
-    id_healthy(System is Healthy)
+    id_healthy(Container is Healthy)
     style id_healthy fill:#b9ff8a,stroke:#000
-    id_not_healthy(System is Unhealthy)
+    id_not_healthy(Container is Unhealthy)
     style id_not_healthy fill:#F88,stroke:#000
 
     id_health --> id_container
